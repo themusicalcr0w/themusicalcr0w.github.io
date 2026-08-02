@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Cory Schreiner's software development portfolio, featuring City Under Magic and PokePet.">
+  <title>Cory Schreiner | Software Development Portfolio</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --background: #090f14;
+      --panel: #101920;
+      --panel-border: #26343d;
+      --text: #f2f4f5;
+      --muted: #aeb8bf;
+      --accent: #d8aa55;
+      --accent-dark: #1b160d;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background:
+        radial-gradient(circle at 12% 0%, rgba(216, 170, 85, .10), transparent 32rem),
+        var(--background);
+      color: var(--text);
+      line-height: 1.6;
+    }
+    a { color: inherit; }
+    .wrap { width: min(1120px, calc(100% - 40px)); margin: 0 auto; }
+    header { padding: 88px 0 48px; }
+    .eyebrow {
+      margin: 0 0 14px;
+      color: var(--accent);
+      font-size: .78rem;
+      font-weight: 800;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+    }
+    h1 {
+      max-width: 830px;
+      margin: 0;
+      font-size: clamp(2.5rem, 7vw, 5.4rem);
+      line-height: 1.02;
+      letter-spacing: -.045em;
+    }
+    .intro {
+      max-width: 700px;
+      margin: 28px 0 0;
+      color: var(--muted);
+      font-size: clamp(1rem, 2vw, 1.2rem);
+    }
+    .links { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 30px; }
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 46px;
+      padding: 0 20px;
+      border: 1px solid var(--panel-border);
+      border-radius: 9px;
+      background: var(--panel);
+      text-decoration: none;
+      font-weight: 750;
+    }
+    .button.primary { border-color: var(--accent); background: var(--accent); color: #17120a; }
+    main { padding: 22px 0 90px; }
+    h2 { margin: 0 0 12px; font-size: clamp(1.8rem, 3vw, 2.6rem); }
+    .section-copy { max-width: 700px; margin: 0 0 30px; color: var(--muted); }
+    .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
+    .card {
+      overflow: hidden;
+      border: 1px solid var(--panel-border);
+      border-radius: 16px;
+      background: rgba(16, 25, 32, .94);
+      box-shadow: 0 20px 60px rgba(0,0,0,.20);
+    }
+    .card img { width: 100%; aspect-ratio: 16 / 9; display: block; object-fit: cover; background: #05080a; }
+    .card-body { padding: 25px; }
+    .card h3 { margin: 0 0 10px; font-size: 1.55rem; }
+    .card p { margin: 0; color: var(--muted); }
+    .tags { display: flex; flex-wrap: wrap; gap: 8px; margin: 18px 0 22px; }
+    .tag {
+      padding: 5px 9px;
+      border: 1px solid var(--panel-border);
+      border-radius: 999px;
+      color: #cad1d5;
+      font-size: .78rem;
+    }
+    .card-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+    footer { border-top: 1px solid var(--panel-border); padding: 26px 0 38px; color: var(--muted); font-size: .9rem; }
+    @media (max-width: 760px) {
+      header { padding-top: 58px; }
+      .grid { grid-template-columns: 1fr; }
+      .wrap { width: min(100% - 24px, 1120px); }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap">
+      <p class="eyebrow">Software Development Portfolio</p>
+      <h1>Cory Schreiner</h1>
+      <p class="intro">Selected projects demonstrating game systems, desktop application development, procedural generation, data persistence, interface engineering, and native operating-system integration.</p>
+      <div class="links">
+        <a class="button primary" href="#projects">View projects</a>
+        <a class="button" href="https://github.com/themusicalcr0w">GitHub profile</a>
+      </div>
+    </div>
+  </header>
+
+  <main id="projects">
+    <section class="wrap" aria-labelledby="projects-title">
+      <p class="eyebrow">Project Case Studies</p>
+      <h2 id="projects-title">Technical work</h2>
+      <p class="section-copy">Each project has its own case-study page with gameplay footage, implementation details, and selected source excerpts.</p>
+
+      <div class="grid">
+        <article class="card">
+          <img src="projects/city-under-magic/showcase/assets/images/world-generation-poster.jpg" alt="City Under Magic world-generation and character-visualization interface">
+          <div class="card-body">
+            <h3>City Under Magic</h3>
+            <p>A systems-driven life simulation and visual novel built in Godot. The case study covers procedural population generation, NPC memory and dialogue context, genetic inheritance, custom page rendering, and incremental saving.</p>
+            <div class="tags" aria-label="City Under Magic technologies">
+              <span class="tag">Godot</span>
+              <span class="tag">GDScript</span>
+              <span class="tag">Procedural systems</span>
+              <span class="tag">Persistence</span>
+            </div>
+            <div class="card-actions">
+              <a class="button primary" href="projects/city-under-magic/">View case study</a>
+            </div>
+          </div>
+        </article>
+
+        <article class="card">
+          <img src="projects/poke-pet/showcase/assets/images/hero-poster.jpg" alt="PokePet desktop companion application running multiple pet windows">
+          <div class="card-body">
+            <h3>PokePet</h3>
+            <p>A desktop companion application built in Godot 4.6 .NET. The case study covers multi-window pet management, monitor-aware layout, persistent configuration, runtime sprite processing, and native OS integration.</p>
+            <div class="tags" aria-label="PokePet technologies">
+              <span class="tag">Godot .NET</span>
+              <span class="tag">GDScript</span>
+              <span class="tag">C#</span>
+              <span class="tag">Desktop integration</span>
+            </div>
+            <div class="card-actions">
+              <a class="button primary" href="projects/poke-pet/">View case study</a>
+              <a class="button" href="https://github.com/themusicalcr0w/poke-pet">Source repository</a>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap">Cory Schreiner · Software Development Portfolio</div>
+  </footer>
+</body>
+</html>

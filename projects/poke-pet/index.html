@@ -1,0 +1,770 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Technical case study for PokePet, a multi-window desktop companion built in Godot by Cory Schreiner.">
+  <meta name="theme-color" content="#08100f">
+  <title>PokePet — Technical Case Study | Cory Schreiner</title>
+  <link rel="stylesheet" href="showcase/styles.css">
+  <script defer src="showcase/script.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <a class="brand" href="#top" aria-label="Back to top">
+      <span class="brand-mark">C</span>
+      <span><strong>Cory Schreiner</strong><small>Software developer portfolio</small></span>
+    </a>
+    <nav aria-label="Case study navigation">
+      <a href="#overview">Overview</a>
+      <a href="#systems">Systems</a>
+      <a href="#code">Code</a>
+      <a href="#source">Source</a>
+    </nav>
+  </header>
+
+  <main id="main">
+    <section class="hero section" id="top">
+      <div class="hero-copy">
+        <p class="eyebrow">Technical case study</p>
+        <h1>PokePet</h1>
+        <p class="hero-subtitle">A multi-window desktop companion built with Godot 4.6 .NET.</p>
+        <p class="hero-description">I built transparent always-on-top pet windows, per-pet persistence, monitor-aware placement, live customization, system-tray control, autostart support, and small native window integrations. The complete source is public.</p>
+        <p class="rights-note"><strong>Artwork and IP notice:</strong> The Pokémon names, characters, sprites, and related visual assets shown here are third-party intellectual property. This page evaluates my software implementation only; I do not claim authorship of those assets. PokePet is an unofficial fan-made portfolio project and is not affiliated with Nintendo, Creatures Inc., Game Freak, or The Pokémon Company.</p>
+        <div class="tag-row" aria-label="Project attributes">
+          <span>Godot 4.6 .NET</span><span>GDScript</span><span>C# / .NET 8</span><span>Public source</span>
+        </div>
+        <div class="hero-actions">
+          <a class="button button-primary" href="#systems">Explore the engineering</a>
+          <a class="button button-secondary" href="https://github.com/themusicalcr0w/poke-pet" target="_blank" rel="noreferrer">Open the GitHub repository</a>
+        </div>
+      </div>
+      <figure class="media-frame hero-media">
+        <video autoplay muted loop playsinline preload="metadata" poster="showcase/assets/images/hero-poster.jpg" aria-label="PokePet desktop companion feature montage">
+          <source src="showcase/assets/video/hero-montage.mp4" type="video/mp4">
+        </video>
+        <figcaption>Species selection, per-pet scaling, multi-window management, and live interface customization running directly on the desktop.</figcaption>
+      </figure>
+    </section>
+
+    <section class="proof-strip" aria-label="Technical facts">
+      <div><strong>Up to 6</strong><span>independent pet windows</span></div>
+      <div><strong>Per-pet</strong><span>saved species, layout, and appearance</span></div>
+      <div><strong>3 OS families</strong><span>native background-window hooks implemented</span></div>
+      <div><strong>4 × 4</strong><span>sprite sheets sliced at runtime</span></div>
+    </section>
+
+    <section class="rights-status" aria-labelledby="rights-title">
+      <div>
+        <p class="eyebrow">Portfolio scope</p>
+        <h2 id="rights-title">The engineering is mine. The Pokémon artwork is not.</h2>
+      </div>
+      <p>The recordings use Pokémon sprites and a Pokémon-inspired font to demonstrate the application. Recruiters should evaluate the desktop-window handling, state management, UI composition, persistence, animation setup, and platform integration described below.</p>
+    </section>
+
+    <section class="section overview" id="overview">
+      <div class="section-heading">
+        <p class="eyebrow">Project scope</p>
+        <h2>A small application with real desktop-integration problems</h2>
+        <p>PokePet is not confined to one ordinary game window. A hidden manager process coordinates separate native pet windows, each with its own saved data, monitor placement, scale, UI, animation state, and interaction feedback.</p>
+      </div>
+      <div class="overview-grid">
+        <article class="summary-card">
+          <span class="card-number">01</span>
+          <h3>My role</h3>
+          <p>Sole developer. I implemented the application architecture, pet behavior, settings interface, persistence, native window behavior, autostart setup, and multi-pet synchronization.</p>
+        </article>
+        <article class="summary-card">
+          <span class="card-number">02</span>
+          <h3>Engineering focus</h3>
+          <p>Multi-window scene management, monitor-aware geometry, per-instance state, desktop-style UX, platform interop, runtime sprite assembly, and immediate visual feedback.</p>
+        </article>
+        <article class="summary-card">
+          <span class="card-number">03</span>
+          <h3>Source policy</h3>
+          <p>The repository is public so the complete implementation can be reviewed. This page adds context by connecting visible behavior to representative sections of the codebase.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section architecture" aria-labelledby="architecture-title">
+      <div class="section-heading compact">
+        <p class="eyebrow">Runtime architecture</p>
+        <h2 id="architecture-title">One manager, several native pet windows</h2>
+      </div>
+      <div class="architecture-map" role="img" aria-label="Architecture map connecting the manager shell, pet windows, persistent settings, geometry control, native integration, and pet behavior">
+        <div class="arch-node arch-root"><strong>Manager shell</strong><span>status tray, lifecycle, pet-window count</span></div>
+        <div class="arch-connector"></div>
+        <div class="arch-row">
+          <div class="arch-node"><strong>Pet Window 1</strong><span>scene + UI + state</span></div>
+          <div class="arch-node"><strong>Pet Window 2–6</strong><span>independent native windows</span></div>
+          <div class="arch-node"><strong>ConfigFile store</strong><span>global and per-pet sections</span></div>
+        </div>
+        <div class="arch-connector"></div>
+        <div class="arch-row arch-row-wide">
+          <div class="arch-node"><strong>Window geometry</strong><span>DPI, monitor, bounds, height</span></div>
+          <div class="arch-node"><strong>Pet state</strong><span>species, variants, friendship</span></div>
+          <div class="arch-node"><strong>Native integration</strong><span>taskbar and app policy hints</span></div>
+          <div class="arch-node"><strong>Behavior state</strong><span>wander, idle, edge response</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section system-section" id="systems">
+      <div class="system-copy">
+        <p class="system-index">System 01</p>
+        <h2>Multi-window pet orchestration</h2>
+        <p>The primary scene becomes a nearly invisible manager shell. It creates one native Godot <code>Window</code> per pet, configures each instance, assigns its pet index, tracks spawned windows, and reconciles the runtime count with saved configuration.</p>
+        <ul class="feature-list">
+          <li>Each pet runs as a separate window instead of being drawn into one shared overlay.</li>
+          <li>The manager creates missing windows and closes windows beyond the requested count.</li>
+          <li>Despawn compacts saved pet sections so runtime indices and persistent data remain aligned.</li>
+          <li>Godot groups broadcast size, height, monitor, and count changes to every live pet.</li>
+        </ul>
+        <a class="text-link" href="showcase/code-samples/multi-window-manager-excerpt.gd">Open the window-manager excerpt</a>
+      </div>
+      <figure class="media-frame">
+        <video controls muted playsinline preload="metadata" poster="showcase/assets/images/multi-pet-management-poster.jpg" aria-label="PokePet changing the number of desktop pet windows">
+          <source src="showcase/assets/video/multi-pet-management.mp4" type="video/mp4">
+        </video>
+        <figcaption>Pet windows are removed and recreated while preserving the manager-controlled desktop layout.</figcaption>
+      </figure>
+    </section>
+
+    <section class="section system-section reverse">
+      <div class="system-copy">
+        <p class="system-index">System 02</p>
+        <h2>Monitor-aware geometry and live scaling</h2>
+        <p>Each pet window resolves its selected monitor, usable desktop rectangle, display scale, requested pet size, vertical offset, and current position. Resizing preserves the previous center when possible and clamps the result to the target monitor.</p>
+        <ul class="feature-list">
+          <li>Window dimensions incorporate both display DPI scale and user-selected pet scale.</li>
+          <li>Moving between monitors preserves relative horizontal placement.</li>
+          <li>Bottom anchoring and height offsets operate inside the usable desktop area.</li>
+          <li>Edge collisions emit a direction signal that temporarily forces the pet back toward open screen space.</li>
+        </ul>
+        <a class="text-link" href="showcase/code-samples/monitor-layout-excerpt.gd">Open the monitor-layout excerpt</a>
+      </div>
+      <figure class="media-frame">
+        <video controls muted playsinline preload="metadata" poster="showcase/assets/images/window-scaling-poster.jpg" aria-label="PokePet changing pet scale and height at runtime">
+          <source src="showcase/assets/video/window-scaling.mp4" type="video/mp4">
+        </video>
+        <figcaption>Runtime size and height controls update the pet window and rebuild the adjacent settings interface.</figcaption>
+      </figure>
+    </section>
+
+    <section class="section system-section">
+      <div class="system-copy">
+        <p class="system-index">System 03</p>
+        <h2>Per-pet persistence and data-driven variants</h2>
+        <p>Godot's <code>ConfigFile</code> stores global application values separately from numbered pet sections. Each pet retains its own species, friendship, shiny and female variants, alternate form, colors, opacity, scale, height, and monitor.</p>
+        <ul class="feature-list">
+          <li>New pet slots inherit layout settings while receiving independent identity values.</li>
+          <li>Legacy values remain available as fallbacks for the first pet.</li>
+          <li>Species names are derived from Pokédex number and special-case form rules.</li>
+          <li>Every pet duplicates its <code>SpriteFrames</code> resource before slicing a 4×4 sheet into four directional animations.</li>
+        </ul>
+        <div class="inline-links">
+          <a class="text-link" href="showcase/code-samples/persistent-pet-slots-excerpt.gd">Open the persistence excerpt</a>
+          <a class="text-link" href="showcase/code-samples/runtime-sprite-sheet-excerpt.gd">Open the sprite excerpt</a>
+        </div>
+      </div>
+      <figure class="media-frame">
+        <video controls muted playsinline preload="metadata" poster="showcase/assets/images/species-variants-poster.jpg" aria-label="PokePet changing species and variants for individual pets">
+          <source src="showcase/assets/video/species-variants.mp4" type="video/mp4">
+        </video>
+        <figcaption>Individual pets can change species and form without altering the other active window instances.</figcaption>
+      </figure>
+    </section>
+
+    <section class="section system-section reverse">
+      <div class="system-copy">
+        <p class="system-index">System 04</p>
+        <h2>Immediate customization and interaction feedback</h2>
+        <p>The compact right-click settings interface is built at runtime and updates the active pet without leaving the desktop. Background color, opacity, text tone, species, size, monitor, and other settings are saved as they change.</p>
+        <ul class="feature-list">
+          <li>Popup placement follows the pet while remaining inside monitor bounds.</li>
+          <li>UI colors and text styling update live across registered controls.</li>
+          <li>Left-click interaction increments friendship, changes the emote, and spawns a floating heart.</li>
+          <li>A status-tray menu opens settings or quits the background application.</li>
+        </ul>
+      </div>
+      <figure class="media-frame">
+        <video controls muted playsinline preload="metadata" poster="showcase/assets/images/live-customization-poster.jpg" aria-label="PokePet changing menu colors and opacity">
+          <source src="showcase/assets/video/live-customization.mp4" type="video/mp4">
+        </video>
+        <figcaption>The interface background, opacity, and text tone change immediately while several pet windows remain active.</figcaption>
+      </figure>
+    </section>
+
+    <section class="section native-section">
+      <div class="section-heading">
+        <p class="eyebrow">Native interop</p>
+        <h2>Desktop behavior beyond ordinary Godot window flags</h2>
+        <p>A small C# bridge uses native handles and platform-specific APIs to make pet windows behave more like background desktop companions. The implementation includes Windows extended window styles and taskbar removal, X11 skip-taskbar and skip-pager properties, and a macOS accessory application policy.</p>
+      </div>
+      <div class="native-grid">
+        <article><strong>Windows</strong><span>Extended styles, frame refresh, and taskbar-list removal through P/Invoke and COM.</span></article>
+        <article><strong>X11 desktops</strong><span><code>_NET_WM_STATE_SKIP_TASKBAR</code> and <code>_NET_WM_STATE_SKIP_PAGER</code> properties.</span></article>
+        <article><strong>macOS</strong><span>Objective-C runtime calls to apply an accessory activation policy.</span></article>
+      </div>
+      <a class="text-link" href="showcase/code-samples/native-window-integration-excerpt.cs">Open the native-integration excerpt</a>
+    </section>
+
+    <section class="section code-section" id="code">
+      <div class="section-heading">
+        <p class="eyebrow">Implementation evidence</p>
+        <h2>Representative code from the public repository</h2>
+        <p>The excerpts below are copied from the project and shortened only by selecting the functions relevant to each explanation. The complete files and scene structure are available in the repository.</p>
+      </div>
+      <div class="code-shell">
+        <div class="code-toolbar">
+          <div class="code-tabs" role="tablist" aria-label="Code samples">
+            <button id="tab-windows" role="tab" aria-controls="code-windows" aria-selected="true" data-code-tab="windows">Windows</button>
+            <button id="tab-geometry" role="tab" aria-controls="code-geometry" aria-selected="false" tabindex="-1" data-code-tab="geometry">Geometry</button>
+            <button id="tab-persistence" role="tab" aria-controls="code-persistence" aria-selected="false" tabindex="-1" data-code-tab="persistence">Persistence</button>
+            <button id="tab-native" role="tab" aria-controls="code-native" aria-selected="false" tabindex="-1" data-code-tab="native">Native C#</button>
+            <button id="tab-sprites" role="tab" aria-controls="code-sprites" aria-selected="false" tabindex="-1" data-code-tab="sprites">Sprites</button>
+          </div>
+          <div class="code-meta"><span id="code-label">PokePet.gd — multi-window manager</span><button type="button" data-copy-code>Copy</button></div>
+        </div>
+        <div class="code-panels">
+          <pre id="code-windows" role="tabpanel" aria-labelledby="tab-windows" data-code-panel="windows"><code># Representative excerpt from Scripts/PokePet.gd
+# Window synchronization and per-pet native window creation.
+
+func _sync_pet_windows(target_count: int = -1) -&gt; void:
+	if not is_primary_pet:
+		return
+
+	if target_count &lt; 0:
+		target_count = PokeEmote.load_number_of_pokemon()
+	target_count = clampi(target_count, 1, PokeEmote.MAX_POKEMON)
+	emote.number_of_pokemon = target_count
+
+	for index in range(1, target_count + 1):
+		if not spawned_pet_windows.has(index) or not is_instance_valid(spawned_pet_windows[index]):
+			_spawn_pet_window(index)
+
+	for key in spawned_pet_windows.keys():
+		var index := int(key)
+		if index &gt; target_count:
+			var window := spawned_pet_windows[index] as Window
+			if is_instance_valid(window):
+				_close_spawned_pet_window(window)
+			spawned_pet_windows.erase(index)
+
+
+
+
+func _spawn_pet_window(index: int) -&gt; void:
+	PokeEmote.ensure_pet_slot(index, 1)
+
+	var packed_scene := _get_pet_window_scene()
+	if not packed_scene:
+		push_warning(&quot;Unable to load pet window scene: %s&quot; % PET_WINDOW_SCENE_PATH)
+		return
+
+	var window := packed_scene.instantiate() as Window
+	if not window:
+		push_warning(&quot;Pet window scene root must be a Window: %s&quot; % PET_WINDOW_SCENE_PATH)
+		return
+
+	window.visible = false
+	var screen_id := PokeEmote.load_pet_monitor_index(index)
+	var spawn_position := _get_pet_window_spawn_position(index, screen_id)
+
+	window.title = APP_NAME + &quot; &quot; + str(index)
+	window.current_screen = screen_id
+	window.position = spawn_position
+	_configure_window_for_desktop_pet(window, false)
+	window.close_requested.connect(Callable(window, &quot;queue_free&quot;))
+
+	var scene_root := window.get_node_or_null(&quot;SceneRoot&quot;)
+	if not scene_root:
+		push_warning(&quot;Pet window scene is missing SceneRoot.&quot;)
+		window.queue_free()
+		return
+
+	var pet := scene_root.get_node_or_null(&quot;Pet&quot;) as PokePet
+	if pet:
+		pet.pet_index = index
+		pet.is_primary_pet = false
+		pet.has_initial_window_position = true
+		pet.initial_window_position = spawn_position
+		var emote_node := pet.get_node_or_null(&quot;Emotions2&quot;)
+		if emote_node is PokeEmote:
+			emote_node.pet_index = index
+
+	get_tree().root.add_child(window)
+	spawned_pet_windows[index] = window
+	window.show()
+	_apply_background_window_hint_for_window(window)
+
+
+
+
+
+# Despawn path keeps runtime windows and saved slot order consistent.
+func _despawn_pet_window(index: int) -&gt; void:
+	if not is_primary_pet or index &lt;= 1:
+		return
+
+	var new_count := PokeEmote.despawn_pet(index)
+	emote.number_of_pokemon = new_count
+	_close_popup()
+
+	for key in spawned_pet_windows.keys():
+		var window := spawned_pet_windows[key] as Window
+		if is_instance_valid(window):
+			_close_spawned_pet_window(window)
+	spawned_pet_windows.clear()
+	get_tree().call_group(&quot;poke_pet_instances&quot;, &quot;_on_number_of_pokemon_changed&quot;, new_count)
+	call_deferred(&quot;_sync_pet_windows&quot;, new_count)
+
+
+
+</code></pre><pre id="code-geometry" role="tabpanel" aria-labelledby="tab-geometry" data-code-panel="geometry" hidden><code># Representative excerpt from Scripts/MainNode.gd
+# Monitor-aware sizing, positioning, DPI scaling, and edge response.
+
+	
+	
+	
+	
+func _ready() -&gt; void:
+	var pet := _get_pet_node()
+	if pet and pet.is_primary_pet:
+		set_process(false)
+		return
+
+	set_process(true)
+	cam.make_current()
+	cam.position = Vector2.ZERO
+	cam.offset   = Vector2.ZERO
+	call_deferred(&quot;apply_pet_window_settings&quot;, true)
+
+
+
+
+func apply_pet_window_settings(reset_position: bool = false) -&gt; void:
+	var id := get_window().get_window_id()
+	if id == DisplayServer.INVALID_WINDOW_ID:
+		call_deferred(&quot;apply_pet_window_settings&quot;, reset_position)
+		return
+
+	var current_screen_id := DisplayServer.window_get_current_screen(id)
+	if current_screen_id &lt; 0 or current_screen_id &gt;= DisplayServer.get_screen_count():
+		current_screen_id = _get_screen_for_position(win.position)
+
+	var screen_id := _get_monitor_index()
+	var current_screen_rect := DisplayServer.screen_get_usable_rect(current_screen_id)
+	var screen_rect := DisplayServer.screen_get_usable_rect(screen_id)
+	var dpi_scale := DisplayServer.screen_get_scale(screen_id)
+	var window_scale := _get_window_scale()
+	var px := Vector2i((BASE_WINDOW_SIZE * dpi_scale * window_scale).round())
+	var old_center: Vector2 = Vector2(win.position) + Vector2(win.size) * 0.5
+	win.current_screen = screen_id
+
+	win.min_size = px
+	win.size = px
+
+	var window_pos: Vector2i
+	if reset_position:
+		var pet := _get_pet_node()
+		if pet and pet.has_initial_window_position and screen_rect.has_point(pet.initial_window_position):
+			window_pos = pet.initial_window_position
+		else:
+			var pet_index := _get_pet_index()
+			var spacing := win.size.x + 24
+			var right_margin := 100 + ((pet_index - 1) * spacing)
+			window_pos = screen_rect.position
+			window_pos.x += screen_rect.size.x - win.size.x - right_margin
+	else:
+		window_pos = Vector2i((old_center - Vector2(win.size) * 0.5).round())
+		if current_screen_id != screen_id:
+			var relative_x := clampf((old_center.x - current_screen_rect.position.x) / max(1.0, float(current_screen_rect.size.x)), 0.0, 1.0)
+			window_pos.x = screen_rect.position.x + int(round(relative_x * float(screen_rect.size.x) - float(win.size.x) * 0.5))
+
+	window_pos.x = clampi(window_pos.x, screen_rect.position.x, screen_rect.position.x + max(0, screen_rect.size.x - win.size.x))
+	window_pos.y = screen_rect.position.y + screen_rect.size.y - win.size.y - int(round(_get_height_offset()))
+	win.position = window_pos
+
+	var win_center: Vector2 = Vector2(win.position) + Vector2(win.size) * 0.5
+	window_delta = win_center - cam.global_position
+
+
+
+
+
+func check_monitor_edges():
+	var screen_id := DisplayServer.window_get_current_screen(win.get_window_id())
+	var window_left = win.position.x
+	
+	if window_left &lt;= screen_rect.position.x:
+		send_window_bump(&quot;right&quot;) #hitting the left edge
+	elif window_right &gt;= screen_rect.position.x + screen_rect.size.x:
+		send_window_bump(&quot;left&quot;) #hitting the right edge
+		
+		
+		
+		
+		
+func get_more_space_side(global_x: float) -&gt; String:
+	var screen_id := DisplayServer.window_get_current_screen(win.get_window_id())
+	var screen_rect := DisplayServer.screen_get_usable_rect(screen_id)
+
+	var dist_left := global_x - screen_rect.position.x
+	var dist_right := (screen_rect.position.x + screen_rect.size.x) - global_x
+
+</code></pre><pre id="code-persistence" role="tabpanel" aria-labelledby="tab-persistence" data-code-panel="persistence" hidden><code># Representative excerpt from Scripts/PokeEmote.gd
+# Per-pet ConfigFile sections, inherited layout, and slot compaction.
+
+static func pet_section(index: int) -&gt; String:
+	return PET_SECTION_PREFIX + str(max(1, index))
+
+
+
+
+func _section() -&gt; String:
+	return pet_section(pet_index)
+
+
+
+
+func _get_pet_value(cfg: ConfigFile, key: String, default_value: Variant) -&gt; Variant:
+	var fallback: Variant = default_value
+	if pet_index == 1:
+		fallback = cfg.get_value(LEGACY_SECTION, key, default_value)
+
+	return cfg.get_value(_section(), key, fallback)
+
+
+
+
+static func load_number_of_pokemon() -&gt; int:
+static func ensure_pet_slot(index: int, inherit_layout_from: int = 1, force_layout_inherit: bool = false) -&gt; void:
+	if index &lt;= 1:
+		return
+
+	var cfg := ConfigFile.new()
+	if cfg.load(SAVE_PATH) != OK:
+		cfg = ConfigFile.new()
+
+	var section := pet_section(index)
+	if cfg.has_section(section):
+		var layout_initialized := bool(cfg.get_value(section, KEY_LAYOUT_INITIALIZED, false))
+		if force_layout_inherit or not layout_initialized:
+			_copy_layout_settings(cfg, pet_section(inherit_layout_from), section)
+			cfg.set_value(section, KEY_TEXT_GREY, 0.0)
+			cfg.set_value(section, KEY_LAYOUT_INITIALIZED, true)
+			cfg.save(SAVE_PATH)
+		return
+
+	var inherit_section := pet_section(inherit_layout_from)
+	var inherited_bg := str(cfg.get_value(inherit_section, KEY_BG_COLOR, cfg.get_value(LEGACY_SECTION, KEY_BG_COLOR, Color(0.155, 0.155, 0.155).to_html())))
+	var inherited_opacity := float(cfg.get_value(inherit_section, KEY_BG_OPACITY, cfg.get_value(LEGACY_SECTION, KEY_BG_OPACITY, 0.4)))
+	var inherited_scale := float(cfg.get_value(inherit_section, KEY_WINDOW_SCALE, cfg.get_value(LEGACY_SECTION, KEY_WINDOW_SCALE, 1.0)))
+	var inherited_height := float(cfg.get_value(inherit_section, KEY_HEIGHT_OFFSET, cfg.get_value(LEGACY_SECTION, KEY_HEIGHT_OFFSET, 0.0)))
+	var inherited_monitor := int(cfg.get_value(inherit_section, KEY_MONITOR_INDEX, cfg.get_value(LEGACY_SECTION, KEY_MONITOR_INDEX, DEFAULT_MONITOR_INDEX)))
+
+	cfg.set_value(section, KEY_FRIENDSHIP, 300)
+	cfg.set_value(section, KEY_SHINY, false)
+	cfg.set_value(section, KEY_FEMALE, false)
+	cfg.set_value(section, KEY_POKEDEX, 137)
+	cfg.set_value(section, KEY_POKEMON, &quot;137&quot;)
+	cfg.set_value(section, KEY_ALT_INDEX, 0)
+	cfg.set_value(section, KEY_BG_COLOR, inherited_bg)
+	cfg.set_value(section, KEY_BG_OPACITY, inherited_opacity)
+	cfg.set_value(section, KEY_TEXT_GREY, 0.0)
+	cfg.set_value(section, KEY_WINDOW_SCALE, clampf(float(inherited_scale), 0.5, 4.0))
+	cfg.set_value(section, KEY_HEIGHT_OFFSET, clampf(float(inherited_height), -300.0, 300.0))
+	cfg.set_value(section, KEY_MONITOR_INDEX, normalize_monitor_index(inherited_monitor))
+	cfg.set_value(section, KEY_LAYOUT_INITIALIZED, true)
+	cfg.save(SAVE_PATH)
+
+
+
+
+static func _copy_layout_settings(cfg: ConfigFile, from_section: String, to_section: String) -&gt; void:
+	var inherited_scale := float(cfg.get_value(from_section, KEY_WINDOW_SCALE, cfg.get_value(LEGACY_SECTION, KEY_WINDOW_SCALE, 1.0)))
+	var inherited_height := float(cfg.get_value(from_section, KEY_HEIGHT_OFFSET, cfg.get_value(LEGACY_SECTION, KEY_HEIGHT_OFFSET, 0.0)))
+	var inherited_monitor := int(cfg.get_value(from_section, KEY_MONITOR_INDEX, cfg.get_value(LEGACY_SECTION, KEY_MONITOR_INDEX, DEFAULT_MONITOR_INDEX)))
+
+	cfg.set_value(to_section, KEY_WINDOW_SCALE, clampf(inherited_scale, 0.5, 4.0))
+	cfg.set_value(to_section, KEY_HEIGHT_OFFSET, clampf(inherited_height, -300.0, 300.0))
+	cfg.set_value(to_section, KEY_MONITOR_INDEX, normalize_monitor_index(inherited_monitor))
+
+
+
+static func despawn_pet(index: int) -&gt; int:
+	if index &lt;= 1:
+		return load_number_of_pokemon()
+
+	var cfg := ConfigFile.new()
+	if cfg.load(SAVE_PATH) != OK:
+		save_number_of_pokemon(1)
+		return 1
+
+	var count := load_number_of_pokemon()
+	if index &gt; count:
+		return count
+
+	for move_index in range(index, count):
+		_copy_pet_section(cfg, pet_section(move_index + 1), pet_section(move_index))
+
+	var last_section := pet_section(count)
+	if cfg.has_section(last_section):
+		cfg.erase_section(last_section)
+
+	var new_count := clampi(count - 1, 1, MAX_POKEMON)
+	cfg.set_value(GLOBAL_SECTION, KEY_NUMBER_OF_POKEMON, new_count)
+	cfg.save(SAVE_PATH)
+	return new_count
+
+
+
+
+static func _copy_pet_section(cfg: ConfigFile, from_section: String, to_section: String) -&gt; void:
+	if cfg.has_section(to_section):
+		cfg.erase_section(to_section)
+
+	if not cfg.has_section(from_section):
+		return
+
+	for key in cfg.get_section_keys(from_section):
+		cfg.set_value(to_section, key, cfg.get_value(from_section, key))
+
+
+
+</code></pre><pre id="code-native" role="tabpanel" aria-labelledby="tab-native" data-code-panel="native" hidden><code>// Representative excerpt from Scripts/NativeWindowIntegration.cs
+// Native taskbar/background behavior for Windows, X11, and macOS.
+
+using Godot;
+using System;
+using System.Runtime.InteropServices;
+
+public partial class NativeWindowIntegration : Node
+{
+    private const int GwlExStyle = -20;
+    private const long WsExToolWindow = 0x00000080L;
+    private const long WsExAppWindow = 0x00040000L;
+    private const int SwHide = 0;
+    private const int SwShowNoActivate = 4;
+    private const uint SwpNoMove = 0x0002;
+    private const uint SwpNoSize = 0x0001;
+    private const uint SwpNoZOrder = 0x0004;
+    private const uint SwpNoActivate = 0x0010;
+    private const uint SwpFrameChanged = 0x0020;
+    private const int PropModeAppend = 2;
+
+    public void ApplyAppBackgroundPolicy()
+    {
+        if (Godot.OS.GetName() != &quot;macOS&quot;)
+        {
+            return;
+        }
+
+        try
+        {
+            ApplyMacOSAccessoryPolicy();
+        }
+        catch (Exception ex)
+        {
+            GD.PushWarning($&quot;Unable to apply macOS background app policy: {ex.Message}&quot;);
+        }
+    }
+
+    public void ApplyBackgroundWindowHints(int windowId)
+    {
+        if (windowId &lt; 0)
+        {
+            return;
+        }
+
+        try
+        {
+            var windowHandle = new IntPtr(DisplayServer.WindowGetNativeHandle(DisplayServer.HandleType.WindowHandle, windowId));
+            if (windowHandle == IntPtr.Zero)
+            {
+                return;
+            }
+
+            switch (Godot.OS.GetName())
+            {
+                case &quot;Windows&quot;:
+                    ApplyWindowsTaskbarSkip(windowHandle);
+                    break;
+                case &quot;Linux&quot;:
+                case &quot;FreeBSD&quot;:
+                case &quot;NetBSD&quot;:
+                case &quot;OpenBSD&quot;:
+                case &quot;BSD&quot;:
+                    ApplyX11TaskbarSkip(windowHandle, windowId);
+                    break;
+            }
+        }
+        catch (Exception ex)
+        {
+            GD.PushWarning($&quot;Unable to hide window from taskbar: {ex.Message}&quot;);
+        }
+    }
+
+    private static void ApplyWindowsTaskbarSkip(IntPtr hwnd)
+    {
+        var style = GetWindowLongPtr(hwnd, GwlExStyle).ToInt64();
+        style &amp;= ~WsExAppWindow;
+        style |= WsExToolWindow;
+
+        ShowWindow(hwnd, SwHide);
+        SetWindowLongPtr(hwnd, GwlExStyle, new IntPtr(style));
+        SetWindowPos(hwnd, IntPtr.Zero, 0, 0, 0, 0, SwpNoMove | SwpNoSize | SwpNoZOrder | SwpNoActivate | SwpFrameChanged);
+        ShowWindow(hwnd, SwShowNoActivate);
+        RemoveWindowsTaskbarTab(hwnd);
+    }
+
+    private static void RemoveWindowsTaskbarTab(IntPtr hwnd)
+    {
+        try
+        {
+            var taskbar = (ITaskbarList)new CTaskbarList();
+            taskbar.HrInit();
+            taskbar.DeleteTab(hwnd);
+            if (OperatingSystem.IsWindows())
+            {
+                Marshal.ReleaseComObject(taskbar);
+            }
+        }
+        catch
+        {
+            // The extended window style change above is the primary path.
+        }
+    }
+
+    private static void ApplyX11TaskbarSkip(IntPtr windowHandle, int windowId)
+    {
+        var displayHandle = new IntPtr(DisplayServer.WindowGetNativeHandle(DisplayServer.HandleType.DisplayHandle, windowId));
+        if (displayHandle == IntPtr.Zero)
+        {
+            return;
+        }
+
+        var wmState = XInternAtom(displayHandle, &quot;_NET_WM_STATE&quot;, false);
+        var atomType = XInternAtom(displayHandle, &quot;ATOM&quot;, false);
+        var skipTaskbar = XInternAtom(displayHandle, &quot;_NET_WM_STATE_SKIP_TASKBAR&quot;, false);
+        var skipPager = XInternAtom(displayHandle, &quot;_NET_WM_STATE_SKIP_PAGER&quot;, false);
+        if (wmState == IntPtr.Zero || atomType == IntPtr.Zero || skipTaskbar == IntPtr.Zero)
+        {
+            return;
+        }
+
+        ulong[] atoms = skipPager == IntPtr.Zero
+            ? new[] { (ulong)skipTaskbar.ToInt64() }
+            : new[] { (ulong)skipTaskbar.ToInt64(), (ulong)skipPager.ToInt64() };
+
+        XChangeProperty(displayHandle, windowHandle, wmState, atomType, 32, PropModeAppend, atoms, atoms.Length);
+        XFlush(displayHandle);
+    }
+
+    private static void ApplyMacOSAccessoryPolicy()
+</code></pre><pre id="code-sprites" role="tabpanel" aria-labelledby="tab-sprites" data-code-panel="sprites" hidden><code># Representative excerpt from Scripts/PokePet.gd
+# Runtime slicing of a 4x4 sprite sheet into independent per-pet animations.
+
+func _update_sprite_texture() -&gt; void:
+	if not animated_sprite:
+		return
+
+	
+	
+	
+	var filename := &quot;%s.png&quot; % emote.pokemon
+	var path := &quot;%s%s&quot; % [emote.MON_DIR, filename]
+
+
+	if not ResourceLoader.exists(path):
+		push_warning(&quot;Missing sprite sheet: %s&quot; % path)
+		return
+
+	var tex: Texture2D = load(path)
+	if not tex:
+		return
+
+
+	# Duplicate SpriteFrames so each pet has instance
+	var frames: SpriteFrames = animated_sprite.sprite_frames.duplicate(true)
+	animated_sprite.sprite_frames = frames
+
+
+	# spritesheet is 4x4 (16 frames)
+	var frame_size = Vector2i(
+		int(float(tex.get_width()) / 4.0),
+		int(float(tex.get_height()) / 4.0)
+	)
+
+
+	var anim_map = {
+		&quot;idle_forward&quot;: 0, # top row
+		&quot;idle_left&quot;: 1,    # 2nd row
+		&quot;idle_right&quot;: 2,   # 3rd row
+		&quot;idle_rear&quot;: 3     # bottom row
+	}
+
+
+
+	
+	for anim_name in anim_map.keys():
+		var row = anim_map[anim_name]
+		if not frames.has_animation(anim_name):
+			frames.add_animation(anim_name)
+
+
+
+		frames.clear(anim_name)
+		for col in range(4):
+			var region = Rect2(col * frame_size.x, row * frame_size.y, frame_size.x, frame_size.y)
+			var atlas_tex = AtlasTexture.new()
+			atlas_tex.atlas = tex
+			atlas_tex.region = region
+			frames.add_frame(anim_name, atlas_tex)
+
+
+
+
+
+
+
+
+</code></pre>
+        </div>
+      </div>
+    </section>
+
+    <section class="section next-section">
+      <div class="section-heading">
+        <p class="eyebrow">Engineering reflection</p>
+        <h2>What I would improve in the next iteration</h2>
+        <p>The project works, but the main controller has accumulated UI, lifecycle, settings, and platform responsibilities. A production-focused pass would separate those concerns and add repeatable validation around the parts most affected by desktop differences.</p>
+      </div>
+      <div class="next-grid">
+        <article><span>01</span><h3>Smaller services</h3><p>Move pet-window orchestration, settings UI construction, autostart, and interaction handling into focused components.</p></article>
+        <article><span>02</span><h3>Automated checks</h3><p>Add tests for configuration migration, slot compaction, species-form resolution, and monitor-bound calculations.</p></article>
+        <article><span>03</span><h3>Release pipeline</h3><p>Build repeatable platform exports, installer packaging, versioned releases, and a clear asset-distribution policy.</p></article>
+      </div>
+    </section>
+
+    <section class="closing" id="source">
+      <p class="eyebrow">Source access</p>
+      <h2>The full implementation is available for review.</h2>
+      <p>The repository contains the Godot project, GDScript controllers, C# native-integration layer, scenes, shader, export presets, and project documentation. The third-party character artwork is included only as part of this unofficial fan-project demonstration and is not presented as my original work.</p>
+      <div class="closing-links">
+        <a class="button button-primary" href="https://github.com/themusicalcr0w/poke-pet" target="_blank" rel="noreferrer">Review the repository</a>
+        <a class="button button-secondary" href="#code">Return to code excerpts</a>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <span>© 2026 Cory Schreiner. Software case study.</span>
+    <span>Pokémon and related assets belong to their respective rights holders. Unofficial fan project; no affiliation or endorsement implied.</span>
+  </footer>
+</body>
+</html>
