@@ -1,4 +1,4 @@
-# Cory Schreiner — Software Development Portfolio
+# Cory Schreiner - Software Development Portfolio
 
 This repository contains the static files published at `https://themusicalcr0w.github.io/`.
 
