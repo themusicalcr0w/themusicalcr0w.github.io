@@ -1,8 +1,8 @@
 (() => {
   const labels = {
-    rules: "BattleRules.gd — command dispatch and validation",
-    saves: "BakuSaveStore.gd — verified save writes",
-    recovery: "BakuSaveStore.gd — version checks and recovery"
+    geometry: "StaticGeometryMerge.gd — transforms, vertex channels and index remapping",
+    loading: "SuburbanStaticBatcher.gd — cooperative traversal and worker dispatch",
+    streaming: "SuburbanStaticBatcher.gd — spatial residency and asynchronous restoration"
   };
 
   const tabs = Array.from(document.querySelectorAll("[data-code-tab]"));
@@ -33,7 +33,7 @@
     });
   });
 
-  selectTab("rules");
+  selectTab("geometry");
 
   const copyButton = document.querySelector("[data-copy-code]");
   copyButton?.addEventListener("click", async () => {
